@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<ul id="messages">
+  <% chatHistory.forEach(msg => { %>
+    <li><%= msg.senderId === senderId ? "You" : "He/She" %>: <%= msg.message %></li>
+  <% }) %>
+</ul>
+
+<form id="form">
+  <input id="input" autocomplete="off" /><button type="submit">Send</button>
+</form>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  const bookingId = "<%= bookingId %>";
+  const senderId = "<%= senderId %>";
+  const receiverId = "<%= receiverId %>";
+
+  socket.emit("joinRoom", { bookingId, userId: senderId })
+
+  const form = document.getElementById("form");
+  const input = document.getElementById("input");
+  const messages = document.getElementById("messages");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const msg = input.value.trim();
+    if (msg) {
+      socket.emit("chatMessage", {
+        bookingId,
+        senderId,
+        receiverId,
+        message: msg
+      });
+      input.value = "";
+    }
+  });
+
+  socket.on("message", ({ senderId: from, message }) => {
+    const li = document.createElement("li");
+    li.textContent = (from === senderId ? "You" : "He/She") + ": " + message;
+    messages.appendChild(li);
+  });
+</script>

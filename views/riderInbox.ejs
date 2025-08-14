@@ -1,0 +1,66 @@
+<%- include('partials/header') %>
+
+<div class="inbox_container">
+  <h2>Pending Ride Requests</h2>
+
+  <% if (requests.length === 0) { %>
+   <p>No messages right now. Book or publish a ride to contact other members.
+            If you have already an upcoming ride, feel free to contact who you're travelling with!</p>
+   
+  <% } else { %>
+    <ul>
+  <% requests.forEach((req, index) => { %>
+    <li class="request-item">
+     <strong><%= req.requestedBy.firstName %> <%= req.requestedBy.lastName %></strong> (<%= req.requestedBy.email %>)
+      requested <%= req.passengers %> seat(s) for 
+      <strong><%= req.rideId.from %> → <%= req.rideId.to %></strong> 
+      on <%= req.rideId.date.toDateString() %>
+
+      <button onclick="openPopup(<%= index %>)">View Details</button>
+
+      <!-- Popup -->
+      <div id="popup-<%= index %>" class="popup-box">
+        <div class="popup-content">
+          <span class="close-btn" onclick="closePopup(<%= index %>)">&times;</span>
+          <h3>Passenger Details</h3>
+          <p><strong>Name:</strong> <%= req.requestedBy.firstName %></p>
+          <p><strong>Email:</strong> <%= req.requestedBy.email %></p>
+          <p><strong>Seats:</strong> <%= req.passengers %></p>
+          <p><strong>Ride Date:</strong> <%= req.rideId.date.toDateString() %></p>
+
+          <form method="POST" action="/respond-request" class="popup-actions">
+            <input type="hidden" name="requestId" value="<%= req._id %>">
+            <button type="submit" name="action" value="accepted" class="btn accept">Accept</button>
+            <button type="submit" name="action" value="rejected" class="btn reject">Reject</button>
+          </form>
+        </div>
+      </div>
+    </li>
+  <% }) %>
+</ul>
+  <% } %>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  const riderId = "<%= user._id %>";
+  socket.emit("join_rider_room", riderId);
+
+  socket.on("new_request", (data) => {
+    alert(`New ride request received for ride ${data.rideId} from ${data.requestedBy}`);
+    location.reload();
+  });
+</script>
+
+<script>
+  function openPopup(index) {
+    document.getElementById(`popup-${index}`).classList.add("active");
+  }
+
+  function closePopup(index) {
+    document.getElementById(`popup-${index}`).classList.remove("active");
+  }
+</script>
+

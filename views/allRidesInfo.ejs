@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+
+<div class="showRide-container">
+  <h2>Available Rides from <%= from %> to <%= to %></h2>
+
+  <% if (rides.length > 0) { %>
+    <% rides.forEach(ride => { %>
+      <%- include('partials/showRide', { ride }) %>
+    <% }) %>
+  <% } else { %>
+    <p>No rides available for this route.</p>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+  <div class="inbox_container">
+    <h1>Inbox</h1>
+
+    <% if (notifications.length===0) { %>
+      <p>No messages right now. Book or publish a ride to contact other members.</p>
+      <% } else { %>
+        <ul class="notification-list">
+          <% notifications.forEach(({ type, status, ride, message, isRead, timestamp, bookingId, receiverId })=> { %>
+            <li class="notification-item <%= status %>" style="<%= !isRead ? 'font-weight:bold;' : '' %>">
+              <% if (type==="ride_response" ) { %>
+                <strong>Your request for ride <%= ride.from %> → <%= ride.to %></strong><br>
+                on <%= ride.date.toDateString() %> was
+                  <span class="status">
+                    <%= status.toUpperCase() %>
+                  </span>
+                  <small>(<%= new Date(timestamp).toLocaleString() %>)</small>
+                  <% } else if (type==="chat" ) { %>
+                    <a href="/chatting/<%= bookingId %>/<%= receiverId %>"
+                      style="text-decoration:none; color:inherit;">
+                      Chat alert: <%= message %>
+                        (<%= ride?.from %> → <%= ride?.to %>)
+                    </a>
+                    <small>(<%= new Date(timestamp).toLocaleString() %>)</small>
+                    <% } %>
+            </li>
+            <% }) %>
+        </ul>
+        <% } %>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const userId = "<%= user._id %>";
+    socket.emit("register_user", userId);
+
+    socket.on("notification", ({ type, from, status, message, ride }) => {
+      if (type === "ride_response") {
+        alert(`Your request for ride ${ride?.from} → ${ride?.to} was ${status.toUpperCase()}`);
+        location.reload();
+      } else if (type === "chat") {
+        alert("New chat message received: " + message);
+        location.reload();
+      }
+    });
+  </script>

@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+  <div class="publishedRides-container">
+    <h2>Your Published rides</h2>
+
+    <% if (rides.length> 0) { %>
+      <% rides.forEach((ride, index)=> { %>
+        <h3>Ride From <%= ride.from %> to <%= ride.to %>
+        </h3>
+        <p><strong>Date:</strong>
+          <%= ride.date %>
+        </p>
+        <p><strong>Time:</strong>
+          <%= ride.time %>
+        </p>
+        <p><strong>Rider:</strong>
+          <%= ride.riderName %>
+        </p>
+        <p><strong>Seats Available:</strong>
+          <%= ride.availableSeats %>
+        </p>
+        <p><strong>Price per Seat:</strong> ₹<%= ride.price %>
+        </p>
+        <p><strong>Contact:</strong>
+          <%= ride.phoneNumber %>
+        </p>
+        <p><strong>Notes:</strong>
+          <%= ride.additionalNotes || "N/A" %>
+        </p>
+        <button onclick="openPopup('<%= ride._id %>')">Passengers</button>
+        <button ><a href="/rider-requests">View Requests</a></button>
+
+        <div id="popup-<%= ride._id %>" class="popup-box" style="display: none;">
+          <div class="popup-content">
+            <span class="close-btn" onclick="closePopup('<%= ride._id %>')">&times;</span>
+            <h4>Passengers:</h4>
+            <ul>
+              <% const passengers=allPassangers[ride._id.toString()] || []; %>
+                <% if (passengers.length===0) { %>
+                  <li>No passengers booked yet.</li>
+                  <% } else { passengers.forEach(p=> { %>
+                    <li>
+                      <%= p.name %> (<%= p.email %>) - <%= p.passengers %> seat(s)<br>
+                     <button onclick="window.location.href = '/chatting/<%= p.bookingId %>/<%= p.bookedByUserId %>';">Chat</button>   
+                    </li>
+                    
+                    <% }) } %>
+            </ul>
+          </div>
+        </div>
+        <% }) %>
+          <% } else { %>
+            <p>No rides Published yet.</p>
+            <% } %>
+  </div>
+
+  <%- include('partials/footer') %>
+
+
+    <script>
+      function openPopup(rideId) {
+        document.getElementById(`popup-${rideId}`).style.display = "block";
+      }
+      function closePopup(rideId) {
+        document.getElementById(`popup-${rideId}`).style.display = "none";
+      }
+
+    </script>

@@ -1,0 +1,74 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blablaCar</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://kit.fontawesome.com/e1f7ce9886.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav>
+            <a href="/home"><img src="/img/BlaBlamain.png" id="logo"></a>
+        
+        <div id="navLinks">
+            <span class="search">
+                <i class="fa-solid fa-magnifying-glass" ></i>
+                 <a href="/search">Search</a>
+            </span>
+
+            <span class="publishRide">
+                <a href="/rideForm"><i class="fa-solid fa-circle-plus"></i></a>
+                <a href="/rideForm">Publish a ride</a>
+            </span>
+
+
+            <div class="dropdown-container">
+                <i class="fa-regular fa-circle-user" onclick="dropdownDisplay()"></i>
+                <span class="dropButton" id="toggleIcon" onclick="dropdownDisplay()">
+                    <i class="fa-solid fa-chevron-down" onclick="dropdownDisplay()"></i>
+                </span>
+
+                <div class="dropList" id="dropdownMenu">
+                    <% if (!user) { %>
+                        <a href="/signin">Sign In</a>
+                        <a href="/login">Login</a>
+                        <% } else { %>
+                            <a href="/userRides">Your Rides</a>
+                            <a href="/publishedRides">Publish Rides</a>
+                            <a href="/profile">Profile</a>
+                            <!-- <a href="/rider-requests">Requests Inbox</a> -->
+                            <a href="/inbox">Inbox</a>
+                            <a href="/logout" onclick="logout()">Logout</a>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+
+<script>
+    const dropdown = document.getElementById("dropdownMenu");
+    const toggleIconBtn = document.getElementById("toggleIcon")
+    const dropdownContainer = document.querySelector(".dropdown-container");
+    let isOpen = false;
+
+    function dropdownDisplay() {
+        isOpen = !isOpen;
+        dropdown.style.display = isOpen ? "block" : "none";
+        toggleIconBtn.innerHTML = `<i class="fa-solid fa-chevron-${isOpen ? "up" : "down"}"></i>`;
+
+    }
+
+    document.addEventListener("click", function (event) {
+        if (!dropdownContainer.contains(event.target)) {
+            dropdown.style.display = "none";
+            isOpen = false;
+            toggleIconBtn.innerHTML = `<i class="fa-solid fa-chevron-down"></i>`;
+        }
+    });
+
+</script>
+
+</html>

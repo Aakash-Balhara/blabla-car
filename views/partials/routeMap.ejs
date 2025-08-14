@@ -1,0 +1,130 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+<style>
+    #routeMap {
+        height: 400px;
+        margin-bottom: 15px;
+    }
+
+    #routeOptions {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .route-option {
+        margin-bottom: 8px;
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background: #fff;
+    }
+</style>
+
+<div id="routeMap"></div>
+<div id="routeOptions">
+    <h3>Select Route</h3>    
+        <div id="routesList"></div>
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+<script>
+    let map = null;
+    function initRouteMap(pickupLat, pickupLng, dropLat, dropLng) {
+
+        if (map) {
+            map.remove();
+        }
+
+        map = L.map('routeMap').setView([pickupLat, pickupLng], 13);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        L.marker([pickupLat, pickupLng], { draggable: false }).addTo(map).bindPopup("Pickup").openPopup();
+        L.marker([dropLat, dropLng], { draggable: false }).addTo(map).bindPopup("Drop");
+
+        const control = L.Routing.control({
+            waypoints: [
+                L.latLng(pickupLat, pickupLng),
+                L.latLng(dropLat, dropLng)
+            ],
+            alternatives: true,
+            addWaypoints: false,
+            draggableWaypoints: false,
+            fitSelectedRoutes: false,
+            show: false,
+            createMarker: () => null,
+            lineOptions: {
+                styles: [{ color: 'gray', opacity: 0.8, weight: 4 }]
+            },
+            router: new L.Routing.osrmv1({
+                serviceUrl: 'https://router.project-osrm.org/route/v1'
+            })
+        }).addTo(map);
+
+        let polylines = [];
+
+        control.on('routesfound', function (e) {
+            const RouteIndex= document.getElementById("RouteIndex");
+            const RouteDistance= document.getElementById("RouteDistance");
+            const RouteDuration= document.getElementById("RouteDuration");
+            const list = document.getElementById("routesList");
+            list.innerHTML = "";
+
+            polylines.forEach(p => map.removeLayer(p));
+            polylines = [];
+
+            e.routes.forEach((route, i) => {
+
+                const line = L.polyline(route.coordinates, {
+                    color: i === 0 ? "blue" : "gray",
+                    weight: i === 0 ? 6 : 4,
+                    opacity: 0.8
+                }).addTo(map);
+
+                polylines.push(line);
+
+                const div = document.createElement("div");
+                div.className = "route-option";
+                div.innerHTML = `
+                <label>
+                    <input type="radio" name="selectedRoute" value="${i}" ${i === 0 ? "checked" : ""}>
+                    Route ${i + 1}: ${(route.summary.totalDistance / 1000).toFixed(1)} km (~${Math.round(route.summary.totalTime / 60)} min)
+                </label>
+            `;
+
+                div.querySelector("input").addEventListener("change", () => {
+                    polylines.forEach((p, j) => p.setStyle({
+                        color: j === i ? "blue" : "gray",
+                        weight: j === i ? 6 : 4
+                    }));
+                    map.fitBounds(polylines[i].getBounds());
+
+                    RouteIndex.value = i;
+                    RouteDistance.value = route.summary.totalDistance;
+                    RouteDuration.value = route.summary.totalTime;
+                });
+
+                list.appendChild(div);
+            });
+
+            if (polylines[0]) {
+                map.fitBounds(polylines[0].getBounds());
+                RouteIndex.value = 0;
+                RouteDistance.value = e.routes[0].summary.totalDistance;
+                RouteDuration.value = e.routes[0].summary.totalTime;
+            }
+
+            // console.log("RouteIndex",RouteIndex.value);
+            // console.log("RouteDistance",RouteDistance.value);
+            // console.log("ROuteDuration",RouteDuration.value); 
+        });
+    }
+</script>

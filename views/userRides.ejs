@@ -1,0 +1,172 @@
+<%- include('partials/header') %>
+    <style>
+        body {
+            background-color: rgb(247, 249, 249);
+        }
+    </style>
+
+    <% if( userRides.length==0){ %>
+        <div class="userRides-container">
+            <img src="/img/yourRIde.png" alt="">
+            <h1>Your future travel plans will appear here.</h1>
+            <p>Find the perfect ride from thousands of destinations, or publish to share your travel costs.</p>
+        </div>
+        <% }else{%>
+            <div id="userBooking">
+                <h2>Your Booked Rides</h2>
+                <% userRides.forEach(({booking,ride})=> { %>
+                    <div class="ride-card" data-rideid="<%= ride._id %>" data-bookingid="<%= booking._id %>">
+                        <h3>
+                            <%= ride.from %> -> <%= ride.to %>
+                        </h3>
+                        <p><strong>Date:</strong>
+                            <%= ride.date %>
+                        </p>
+                        <p><strong>Rider:</strong>
+                            <%= ride.riderName %>
+                        </p>
+
+                        <% if (booking.bookedFor) { %>
+                            <p><strong>Booked For:</strong>
+                                <%= booking.bookedFor.name %><br>
+                                    <%= booking.bookedFor.email %>
+                            </p>
+                            <% } else { %>
+                                <p><strong>Booked For:</strong> Unknown</p>
+                                <% } %>
+
+                                <div class="chat-contaner">
+                                   <button onclick="window.location.href = '/chatting/<%= booking._id %>/<%= ride.userId %>';">Chat</button>
+                                </div>
+                                    <div class="rating-continer">
+                                        <% if (!booking.rating || booking.rating === "Not allowed" ) { %>
+                                            <p class="displayRating" style="display: none;">
+                                                <strong>No rating Given</strong>
+                                            </p>
+                                            <% }else{ %>
+                                                <p class="displayRating" style="display: block;">
+                                                    <strong>you give </strong><%=booking.rating%> <strong> star rating</strong>
+                                                </p>
+                                                <%} %>
+
+                                                    <button class="rateBtn" onclick="ratingpopup()" style="display: none;"> Rate Now</button>
+                                    </div>
+                    </div>
+                    <%})%>
+            </div>
+            <div id="ratingPopup" class="popup" style="display: none;">
+                <div class="popup-box">
+                    <h3>Rate Your Ride</h3>
+                    <div id="stars">
+                        <% for(let i=1; i<=5; i++) { %>
+                            <span class="star" data-value="<%= i %>">&#9733;</span>
+                            <% } %>
+                    </div>
+                    <button id="submitRating">Submit</button>
+                    <button onclick="closePopup()">Cancel</button>
+                </div>
+            </div>
+            <%}%>
+                <script>
+                    let ratingCount = 0;
+                    let currRideId = "";
+                    let currBookingId = "";
+
+                    window.onload = function () {
+                        const allRides = document.querySelectorAll(".ride-card");
+
+                        allRides.forEach((card) => {
+                            const rideId = card.getAttribute("data-rideid");
+                            const bookingId = card.getAttribute("data-bookingid");
+                            const rateBtn = card.querySelector(".rateBtn");
+                            fetch("http://localhost:3300/rateing", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ rideId, bookingId })
+                            }).then(response => response.json())
+                                .then(data => {
+                                    if (data.status === "Allowed") {
+                                        rateBtn.style.display = "block";
+                                        rateBtn.addEventListener("click", () => {
+                                            ratingpopup(rideId, bookingId);
+                                        });
+                                    }
+                                }).catch(err => {
+                                    console.error("Rating check error:", err);
+                                });
+                        });
+                        document.getElementById("submitRating").addEventListener("click", submitrating);
+                    };
+
+                    function closePopup() {
+                        document.getElementById('ratingPopup').style.display = 'none';
+                    }
+
+                    function ratingpopup(rideId, bookingId) {
+                        currRideId = rideId;
+                        currBookingId = bookingId;
+                        document.getElementById("ratingPopup").style.display = "block";
+                        const stars = document.querySelectorAll('#stars .star');
+
+                        stars.forEach((s) => s.classList.remove("selected"));
+                        ratingCount = 0;
+
+                        stars.forEach((star, index) => {
+                            star.onclick = () => {
+                                ratingCount = parseInt(star.getAttribute("data-value"));
+
+                                stars.forEach((s, i) => {
+                                    if (i <= index) {
+                                        s.classList.add("selected");
+                                    } else {
+                                        s.classList.remove("selected");
+                                    }
+                                });
+
+                                console.log("Selected Rating:", ratingCount);
+                            };
+                        });
+
+                    }
+
+                    function submitrating() {
+
+                        if (ratingCount <1 || ratingCount>5) {
+                            alert("Please select a rating before submitting.");
+                            return;
+                        }
+
+                        fetch("http://localhost:3300/submitRating", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                rideId: currRideId,
+                                bookingId: currBookingId,
+                                rating: ratingCount
+                            })
+                        })
+                            .then((res) => res.json())
+                            .then((data) => {
+                                alert("Rating submitted!");
+                                closePopup();
+                                const allRides = document.querySelectorAll(".ride-card");
+                                allRides.forEach((card) => {
+                                    const bookingId = card.getAttribute("data-bookingid");
+                                    if (bookingId === currBookingId) {
+                                        const displayRating = card.querySelector(".displayRating");
+                                        if (displayRating) {
+                                            displayRating.style.display = "block";
+                                            // displayRating.innerText = ratingCount;
+                                        }
+                                    }
+                                });
+                                location.reload();
+                            })
+                            .catch((err) => {
+                                console.error("Rating submit error:", err);
+                            });
+                    };
+
+                </script>

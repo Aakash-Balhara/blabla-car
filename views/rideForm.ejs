@@ -1,0 +1,275 @@
+<%- include('partials/header') %>
+
+    <div class="formContainer">
+        <form id="rideForm">
+            <div class="step1">
+                <h2>Ride Details</h2>
+                <label for="from">Pick-up</label>
+                <input type="text" id="from" name="from" placeholder="Enter your full address" required>
+                <ul id="fromSuggestions" class="suggestions-list"></ul>
+                <button type="button" onclick="nextStep(1)">Continue</button>
+            </div>
+
+            <div class="step2" style="display: none;">
+                <h1>Where would you like to pick up passengers?</h1>
+                <input type="text" id="pickup" name="pickup" required>
+                <ul id="pickupSuggestions" class="suggestions-list"></ul>
+
+                <button type="button" onclick="prevStep(2)">Back</button>
+                <button type="button" onclick="nextStep(2)">Continue</button>
+
+                <%- include("partials/leafletPickup") %>
+            </div>
+
+            <div class="step3" style="display: none;">
+                <label for="to">Drop-off</label>
+                <input type="text" id="to" name="to" placeholder="Enter your full address" required>
+                <ul id="toSuggestions" class="suggestions-list"></ul>
+
+                <button type="button" onclick="prevStep(3)">Back</button>
+                <button type="button" onclick="nextStep(3)">Continue</button>
+
+            </div>
+
+            <div class="step4" style="display: none;">
+                <h1>Where would you like to drop off passengers?</h1>
+                <input type="text" id="drop" name="drop" required>
+                <ul id="dropSuggestions" class="suggestions-list"></ul>
+
+                <button type="button" onclick="prevStep(4)">Back</button>
+                <button type="button" onclick="nextStep(4)">Continue</button>
+
+                <%- include("partials/leafletDrop") %>
+            </div>
+            <div class="step5" style="display: none;">
+                <%- include("partials/routeMap") %>
+
+                    <button type="button" onclick="prevStep(5)">Back</button>
+                    <button type="button" onclick="nextStep(5)">Continue</button>
+
+            </div>
+
+            <div class="step6" style="display: none;">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required>
+
+                <label for="time">Time</label>
+                <input type="time" id="time" name="time" required>
+
+                <button type="button" onclick="prevStep(6)">Back</button>
+                <button type="button" onclick="nextStep(6)">Continue</button>
+
+            </div>
+            <div class="step7" style="display: none;">
+                <h2>Car and Rider Info</h2>
+
+                <label for="name">Rider Name</label>
+                <input type="text" id="name" name="name">
+
+                <label for="seats">Available Seats</label>
+                <input type="number" id="seats" name="seats" required>
+
+                <label for="price">Price per seat</label>
+                <input type="number" id="price" name="price" required>
+
+                <button type="button" onclick="prevStep(7)">Back</button>
+                <button type="button" onclick="nextStep(7)">Continue</button>
+            </div>
+
+            <div class="step8" style="display: none;">
+                <h2>Contact Info</h2>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required>
+
+                <label for="notes">Additional Notes</label>
+                <textarea id="notes" name="notes"></textarea>
+
+                <button type="button" onclick="prevStep(8)">Back</button>
+                <button type="submit">Submit Ride</button>
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+        function nextStep(step) {
+            const currentStep = document.querySelector(`.step${step}`);
+            const nextStep = document.querySelector(`.step${step + 1}`);
+
+            if (step === 1) {
+                document.getElementById("pickup").value = document.getElementById("from").value || "not selected";
+
+            }
+            if (step === 3) {
+                document.getElementById("drop").value = document.getElementById("to").value || "not selected";
+            }
+
+            if (step === 4) {
+                const pickupLat = document.getElementById("pickupLat").value;
+                const pickupLng = document.getElementById("pickupLng").value;
+                const dropLat = document.getElementById("dropLat").value;
+                const dropLng = document.getElementById("dropLng").value;
+
+                if (!pickupLat || !pickupLng || !dropLat || !dropLng) {
+                    alert("Please select pickup and drop locations first!");
+                    return;
+                }
+
+                if (typeof initRouteMap === "function") {
+                    initRouteMap(pickupLat, pickupLng, dropLat, dropLng);
+                    setTimeout(() => {
+                        if (map) {
+                            map.invalidateSize();
+                        }
+                    }, 200);
+                }
+            }
+
+
+            if (nextStep) {
+                currentStep.style.display = "none";
+                nextStep.style.display = "block";
+
+            }
+        }
+        function prevStep(step) {
+            const currentStep = document.querySelector(`.step${step}`);
+            const prevStep = document.querySelector(`.step${step - 1}`);
+
+            if (prevStep) {
+                currentStep.style.display = "none";
+                prevStep.style.display = "block";
+            }
+        }
+
+        const rideForm = document.getElementById("rideForm");
+        rideForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const rideData = {
+                from: document.getElementById("from").value.trim().toLowerCase(),
+                to: document.getElementById("to").value.trim().toLowerCase(),
+                pickup: document.getElementById("pickup").value.trim(),
+                drop: document.getElementById("drop").value.trim(),
+                date: document.getElementById("date").value.trim(),
+                time: document.getElementById("time").value.trim(),
+                riderName: document.getElementById("name").value.trim().toLowerCase(),
+                availableSeats: document.getElementById("seats").value.trim(),
+                price: document.getElementById("price").value.trim(),
+                phoneNumber: document.getElementById("phone").value.trim(),
+                additionalNotes: document.getElementById("notes").value.trim().toLowerCase()
+            }
+
+            for (const key in rideData) {
+                if (key === "additionalNotes") {
+                    continue;
+                };
+                if (!rideData[key]) {
+                    alert("Please fill all required fields.");
+                    return;
+                }
+            }
+
+            const today = new Date().setHours(0, 0, 0, 0);
+            const rideDate = new Date(rideData.date).setHours(0, 0, 0, 0);
+
+            if (rideDate < today) {
+                alert("Ride date cannot be in the past.");
+                return;
+            }
+
+            fetch("http://localhost:3300/rideForm", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(rideData)
+            })
+                .then(async response => {
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert(result.message || "Ride submitted successfully!");
+                        window.location.href = "/home";
+                    } else {
+                        alert(result.message || "Please check your date");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("submitting error");
+                })
+
+        });
+
+        function locationsuggestion(inputId, listId, isPickup) {
+            const input = document.getElementById(inputId);
+            const list = document.getElementById(listId);
+
+            input.addEventListener("input", async () => {
+                const query = input.value.trim();
+                if (!query) {
+                    list.innerHTML = "";
+                    return;
+                }
+
+                fetch(`https://api.locationiq.com/v1/autocomplete?key=pk.a06f4d8a905af24115edd3a26163f682&q=${query}&limit=5&dedupe=1&tag=place:city&countrycodes=in`)
+                    .then(res => res.json())
+                    .then(data => {
+                        list.innerHTML = "";
+                        data.forEach(place => {
+                            const city =
+                                place.address.city ||
+                                place.address.town ||
+                                place.address.village ||
+                                place.display_place ||
+                                place.display_name;
+                            const state = place.address.state || "";
+                            const displayText = state ? `${city}, ${state}` : city;
+
+                            const li = document.createElement("li");
+                            li.textContent = displayText;
+
+                            li.addEventListener("click", () => {
+                                input.value = displayText;
+                                list.innerHTML = "";
+
+                                const lat = parseFloat(place.lat);
+                                const lon = parseFloat(place.lon);
+
+                                if (inputId === "from") {
+                                    document.getElementById("pickupLat").value = lat;
+                                    document.getElementById("pickupLng").value = lon;
+                                    document.getElementById("pickupCity").value = displayText;
+
+                                    pickupMap.setView([lat, lon], 12);
+                                } else {
+                                    document.getElementById("dropLat").value = lat;
+                                    document.getElementById("dropLng").value = lon;
+                                    document.getElementById("dropCity").value = displayText;
+
+                                    dropMap.setView([lat, lon], 12);
+                                }
+
+                            });
+
+                            list.appendChild(li);
+                        });
+                    }).catch(err => {
+                        console.error("Autocomplete error:", err);
+                    });
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!list.contains(e.target) && e.target !== input) {
+                    list.innerHTML = "";
+                }
+            });
+        }
+
+        locationsuggestion("from", "fromSuggestions");
+        locationsuggestion("to", "toSuggestions");
+        locationsuggestion("pickup", "pickupSuggestions");
+        locationsuggestion("drop", "dropSuggestions");
+
+    </script>

@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+  <div class="container">
+
+    <div>
+      <img id="homeImg" src="/img/image (2).png">
+    </div>
+    <div class="card-partials">
+      <%- include('partials/card') %>
+    </div>
+
+    <div class="ride-container">
+      <div class="rideText">
+        <h2>Driving in your car soon?</h2>
+        <p>Let's make this your least expensive journey ever.</p>
+        <button onclick="rideForm()">Offer a ride</button>
+      </div>
+      <div class="rideImg">
+        <img src="/img/blablaRide.jpg">
+      </div>
+
+    </div>
+
+    <div class="ridePicker-Container">
+      <h2>Where do you want to go?</h2>
+      <ul id="rideList"></ul>
+    </div>
+  </div>
+
+  <script>
+
+    function displayRides() {
+      const ul = document.getElementById("rideList");
+      const addedRoutes = new Set();
+      fetch("http://localhost:3300/allRides")
+        .then(response => response.json())
+        .then(result => {
+          result.forEach(ride => {
+            const keyValue = `${ride.from.trim().toLowerCase()}-${ride.to.trim().toLowerCase()}`
+
+            if (!addedRoutes.has(keyValue)) {
+              addedRoutes.add(keyValue);
+              const li = document.createElement("li");
+              li.innerHTML = `<button class="viewbtn" data-from="${ride.from}" data-to="${ride.to}">
+                 ${ride.from} -> ${ride.to}
+              </button>`;
+
+              ul.appendChild(li);
+            }
+          });
+          document.querySelectorAll(".viewbtn").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const from = btn.dataset.from;
+              const to = btn.dataset.to;
+              window.location.href = `/rideForm/${from}-${to}`;
+            })
+          })
+        })
+
+        .catch(err => console.log("Fetch error:", err));
+
+    }
+
+
+
+    window.onload = displayRides;
+
+    function rideForm() {
+      window.location.href = "/rideForm";
+    }
+
+    function forget() {
+      window.location.href = "/forget";
+    }
+
+    function logout() {
+      window.location.href = "/logout";
+    }
+  </script>
+
+  <%- include('partials/footer') %>

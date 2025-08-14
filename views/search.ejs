@@ -1,0 +1,129 @@
+<%- include('partials/header') %>
+    <div class="searchContainer">
+        <div class="from-to">
+            <input type="text" name="from" placeholder="Leaving From" id="from">
+            <ul id="fromSuggestions" class="suggestions-list"></ul>
+            <input type="text" name="to" placeholder="Going to" id="to">
+            <ul id="toSuggestions" class="suggestions-list"></ul>
+            <input type="date" name="date" placeholder="Today" id="date">
+            <input type="number" name="passanger" placeholder="passanger" id="passanger">
+            <button type="button" id="search">Search</button>
+        </div>
+    </div>
+    <div class="searchValue">
+        <ul class="requiredRide"></ul>
+    </div>
+
+  
+        <script>
+            const searchBtn = document.querySelector("#search");
+            const ul = document.querySelector(".requiredRide");
+
+            function searchRides() {
+                const from = document.getElementById("from").value.trim().toLowerCase();
+                const to = document.getElementById("to").value.trim().toLowerCase();
+                const date = document.getElementById("date").value;
+                const passanger = parseInt(document.getElementById("passanger").value);
+
+                if (!from || !to || !date || !passanger) {
+                    alert("fill the required fields");
+                    return;
+                }
+
+                const selectedDate = new Date(date);
+                // console.log("date",selectedDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    alert("Please select a valid date (today or future).");
+                    return;
+                }
+
+                if (passanger <= 0) {
+                    alert("Passenger count must be a positive number.");
+                    return;
+                }
+
+                const yyyyMmDd = selectedDate.toISOString().split("T")[0];
+                // console.log(yyyyMmDd);
+                const searchData = {
+                    from,
+                    to,
+                    selectedDate: yyyyMmDd,
+                    passanger
+                }
+
+                // console.log(searchData);
+
+                fetch("http://localhost:3300/search", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(searchData)
+                }).then(response => response.json())
+                    .then(result => {
+                        // console.log("result",result);
+                        ul.innerHTML = "";
+                        if (result.rides && result.rides.length > 0) {
+
+                            result.rides.forEach(ride => {
+                                const li = document.createElement("li");
+                                li.textContent = `${ride.from} ➡ ${ride.to} | ${ride.date} | ${ride.time} | ₹${ride.price}`;
+                                ul.appendChild(li)
+
+                            });
+                        } else {
+                            const li = document.createElement("li");
+                            li.textContent = `No rides found on this rout`;
+                            ul.appendChild(li);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Fetch error:", err);
+                    });
+            }
+
+            searchBtn.addEventListener("click", searchRides)
+
+            // const locationIQToken = 'pk.a06f4d8a905af24115edd3a26163f682';
+
+            function locationsuggestion(inputId, listId) {
+                const input = document.getElementById(inputId);
+                const list = document.getElementById(listId);
+
+                input.addEventListener("input", async () => {
+                    const query = input.value.trim();
+                    if (!query) {
+                        list.innerHTML = "";
+                        return;
+                    }
+
+                   fetch(`https://api.locationiq.com/v1/autocomplete?key='pk.a06f4d8a905af24115edd3a26163f682'&q=${query}&limit=5&dedupe=1&tag=place:city&countrycodes=in`)
+                        .then(res => res.json())
+                        .then(data => {
+                            list.innerHTML = "";
+                            data.forEach(place => {
+                                const li = document.createElement("li");
+                                li.textContent = place.address.name || place.display_place || place.display_name;
+                                li.addEventListener("click", () => {
+                                    input.value = li.textContent;
+                                    list.innerHTML = "";
+                                });
+                                list.appendChild(li);
+                            });
+                        }).catch(err => {
+                            console.error("Autocomplete error:", err);
+                        });
+                });
+
+                document.addEventListener("click", (e) => {
+                    if (!list.contains(e.target) && e.target !== input) {
+                        list.innerHTML = "";
+                    }
+                });
+            }
+
+            locationsuggestion("from", "fromSuggestions");
+            locationsuggestion("to", "toSuggestions");
+
+        </script>

@@ -1,0 +1,64 @@
+<%- include("partials/header") %>
+
+<div class="reset-container">
+  <h1>Forget Password</h1>
+
+  <form id="resetForm">
+    <label for="name">Name</label>
+    <input type="text" placeholder="Enter your name" name="name" id="name" required />
+
+    <label for="password">New Password</label>
+    <input type="password" placeholder="New password" name="password" id="password" required />
+
+    <label for="confirm">Confirm Password</label>
+    <input type="password" placeholder="confirm password" name="confirm" id="confirm" required />
+
+    <input type="hidden" name="token" value="<%= token %>" id="token"/>
+
+    <button type="submit">Submit</button>
+  </form>
+</div>
+<script>
+const form = document.getElementById("resetForm");
+ 
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const confirm = document.getElementById("confirm").value.trim();
+    const token = document.getElementById("token").value.trim();
+
+    if(!name || !password || !confirm ){
+             alert("Please fill all fields.");
+                return;
+        }
+
+    let data = {
+                name: name,
+                password:password,
+                confirm:confirm,
+                token:token               
+            };
+
+    fetch("http://localhost:3300/reset", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.text())
+      .then(message => {
+        alert(message);
+        window.location.href = "/login";
+      })
+      .catch(error => {
+        alert("Some error" + error.message);
+      });
+  });
+
+</script>
+
+
+<%- include("partials/footer") %>

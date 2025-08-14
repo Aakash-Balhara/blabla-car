@@ -1,0 +1,68 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+<style>
+  #pickupMap { height: 350px; }
+</style>
+
+<div id="pickupMap"></div>
+
+<input type="hidden" id="pickupLat" name="pickupLat">
+<input type="hidden" id="pickupLng" name="pickupLng">
+<input type="hidden" id="pickupCity" name="pickupCity">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+<script>
+const locationIQToken = "pk.a06f4d8a905af24115edd3a26163f682";
+
+let defaultCenter = [28.61, 77.21];
+const fromInput = document.getElementById("from")?.value.trim();
+console.log("fromInput",fromInput);
+
+function initPickupMap(center) {
+  const pickupMap = L.map('pickupMap').setView(center, 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(pickupMap);
+
+  const centerMarker = L.marker(center, {
+    icon: L.icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    })
+  }).addTo(pickupMap);
+
+  pickupMap.on("move", () => {
+    centerMarker.setLatLng(pickupMap.getCenter());
+  });
+
+  pickupMap.on("moveend", () => {
+    const c = pickupMap.getCenter();
+    document.getElementById("pickupLat").value = c.lat;
+    document.getElementById("pickupLng").value = c.lng;
+    reverseGeocode(c.lat, c.lng, (city) => {
+      document.getElementById("pickupCity").value = city;
+      document.getElementById("pickup").value = city;
+    });
+  });
+}
+
+if (fromInput) {
+  fetch(`https://us1.locationiq.com/v1/search?key=${locationIQToken}&q=${fromInput}&format=json&limit=1`)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data[0]) {
+        defaultCenter = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+      }
+      initPickupMap(defaultCenter);
+    })
+    .catch(err => {
+      console.error("Geocode from failed:", err);
+      initPickupMap(defaultCenter); 
+    });
+} else {
+  initPickupMap(defaultCenter);
+}
+
+</script>

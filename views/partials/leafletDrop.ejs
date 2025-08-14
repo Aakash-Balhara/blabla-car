@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+<style>
+  #dropMap { height: 350px; }
+</style>
+
+<div id="dropMap"></div>
+
+<input type="hidden" id="dropLat" name="dropLat">
+<input type="hidden" id="dropLng" name="dropLng">
+<input type="hidden" id="dropCity" name="dropCity">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+<script>
+    const accessToken = "pk.a06f4d8a905af24115edd3a26163f682";
+let defaultCen = [28.61, 77.21];
+
+const toInput = document.getElementById("to")?.value.trim();
+
+  const dropMap = L.map('dropMap').setView([28.61, 77.21], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  }).addTo(dropMap);
+
+   const cenMarker = L.marker(dropMap.getCenter(), {
+  icon: L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  })
+}).addTo(dropMap);
+
+ if (toInput) {
+    fetch(`https://us1.locationiq.com/v1/search?key=${accessToken}&q=${toInput}&format=json&limit=1`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data[0]) {
+          defaultCen = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+          dropMap.setView(defaultCen, 13);
+          cenMarker.setLatLng(defaultCen);
+        }
+      })
+      .catch(err => console.error("Geocode to failed:", err));
+  }
+
+dropMap.on("move", () => {
+  cenMarker.setLatLng(dropMap.getCenter());
+});
+
+ dropMap.on("moveend", () => {
+    const center = dropMap.getCenter();
+    const lat = center.lat;
+    const lng = center.lng;
+
+
+      document.getElementById("dropLat").value = lat;
+      document.getElementById("dropLng").value = lng;
+      reverseGeocode(lat, lng, (city) => {
+        document.getElementById("dropCity").value = city;
+        document.getElementById("drop").value = city;
+      });
+    
+  });
+
+  function reverseGeocode(lat, lng, callback) {
+    fetch(`https://us1.locationiq.com/v1/reverse?key=${accessToken}&lat=${lat}&lon=${lng}&format=json`)
+      .then(res => res.json())
+      .then(data => {
+        const address = data?.display_name || "Unknown";
+        callback(address);
+      })
+      .catch(err => {
+        console.error("Reverse geocoding failed:", err);
+        callback("Unknown");
+      });
+  }
+
+
+</script>

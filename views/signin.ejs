@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign in page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav>
+        <img src="/img/BlaBlamain.png" id="logo">
+    </nav>
+
+    <div class="signin">
+
+        <form id="SigninForm">
+
+
+            <div class="step1">
+                <h1 style="text-align: center;">What's your email?</h1>
+                <input type="email" placeholder="Email" name="email" id="email" required /><br>
+                <p>By entering your email, you agree to receive promotional emails from BlaBlaCar.
+                    Opt out now by checking the box above or at any time in your profile settings.</p>
+                <button type="button" onclick="nextStep(1)">Continue</button>
+            </div>
+
+            <div class="step2" style="display: none;">
+                <h1 style="text-align: center;">What's your name?</h1>
+                <label for="firstName">First Name</label><br>
+                <input type="text" placeholder="Enter your name" name="firstName" id="firstName" required /><br>
+
+                <label for="lastName">Last Name</label><br>
+                <input type="text" placeholder="Enter your name" name="lastName" id="lastName" required /><br>
+
+                <button type="button" onclick="prevStep(2)">Back</button>
+                <button type="button" onclick="nextStep(2)">Continue</button>
+            </div>
+
+            <div class="step3" style="display: none;">
+                <h1 style="text-align: center;">What's your date of birth?</h1>
+                <label for="dob">Date of Birth</label><br>
+                <input id="dob" type="date" name="dob" required><br>
+                <button type="button" onclick="prevStep(3)">Back</button>
+                <button type="button" onclick="nextStep(3)">Continue</button>
+            </div>
+
+            <div class="step4" style="display: none;">
+                <h1 style="text-align: center;">Define your password</h1>
+                <label for="password">Password</label><br>
+                <input type="password" placeholder="password" name="password" id="password" required /><br>
+                <button type="button" onclick="prevStep(4)">Back</button>
+                <button type="submit" onclick="nextStep(4)">Sign up</button>
+            </div>
+
+        </form>
+    </div>
+    <script>
+        const signForm = document.getElementById("SigninForm");
+
+        function nextStep(step) {
+            const currentStep = document.querySelector(`.step${step}`);
+            const nextStep = document.querySelector(`.step${step + 1}`);
+
+            if (nextStep) {
+                currentStep.style.display = "none";
+                nextStep.style.display = "block";
+            }
+        }
+        function prevStep(step) {
+            const currentStep = document.querySelector(`.step${step}`);
+            const prevStep = document.querySelector(`.step${step - 1}`);
+
+            if (prevStep) {
+                currentStep.style.display = "none";
+                prevStep.style.display = "block";
+            }
+        }
+
+        async function SignFOrmSubmit(e) {
+            e.preventDefault();
+            const userData = {
+                firstName: document.getElementById("firstName").value.trim(),
+                lastName: document.getElementById("lastName").value.trim(),
+                dob: document.getElementById("dob").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                password: document.getElementById("password").value.trim(),
+            }
+
+            if (!userData.firstName || !userData.lastName || !userData.dob || !userData.email || !userData.password) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            try {
+        const response = await fetch("http://localhost:3300/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+
+        const text = await response.text();
+        alert(text);
+
+        if (response.ok) {
+            window.location.href = '/successEmail';
+        }
+      } catch (err) {
+        alert("Signup failed. Please try again.");
+        console.error(err);
+      }
+    }
+
+    signForm.addEventListener("submit", SignFOrmSubmit);
+    </script>
+
+</body>
+
+</html>

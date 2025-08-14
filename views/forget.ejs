@@ -1,0 +1,46 @@
+<%- include("partials/header") %>
+
+<div class="forget-container">
+  <h1>What's your email? Check your inbox for a link to create a new password.</h1>
+
+  <form id="forgetForm">
+    <input type="email" placeholder="Enter your email" name="email" id="email" required />
+
+    <button type="submit">Send Reset Link</button>
+  </form>
+</div>
+<script>
+  const form = document.getElementById("forgetForm");
+ 
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+
+    let data = {
+                email: email,
+            };
+
+    fetch("http://localhost:3300/forget", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+      
+    })
+      .then(response => response.text())
+      .then(message => {
+        alert(message);
+        window.location.href = "/login";
+      })
+      .catch(error => {
+        alert("Some error" + error);
+      });
+      
+  });
+  
+</script>
+
+
+<%- include("partials/footer") %>

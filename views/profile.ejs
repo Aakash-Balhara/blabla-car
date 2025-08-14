@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+
+<div class="profile-container">
+    <div>
+        <i class="fa-regular fa-circle-user"></i>
+    </div>
+    <div class="Profile-Info">
+        <h1>
+            <%= userData.firstName %>  <%=userData.lastName%>
+        </h1>
+        <h4>
+            <strong>Date of Birth:</strong><br>  <%=userData.dob%>
+        </h4>
+        <h4>
+            <strong> Registered email:</strong><br><%= userData.email %>
+        </h4>
+    </div>
+</div>

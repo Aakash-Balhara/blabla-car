@@ -1,0 +1,106 @@
+<%- include('partials/header') %>
+
+    <div class="bookRide-container">
+        <div class="riderInfo-Part">
+            <h3>Ride From <%= ride.from %> to <%= ride.to %>
+            </h3>
+            <p><strong>Date:</strong>
+                <%= ride.date %>
+            </p>
+            <p><strong>Time:</strong>
+                <%= ride.time %>
+            </p>
+            <p><strong>Rider:</strong>
+                <%= ride.riderName %>
+            </p>
+            <p><strong>Seats Available:</strong>
+                <%= ride.availableSeats %>
+            </p>
+            <p><strong>Contact:</strong>
+                <%= ride.phoneNumber %>
+            </p>
+            <p><strong>Notes:</strong>
+                <%= ride.additionalNotes || "N/A" %>
+            </p>
+            <div style="width: 90px; height: 40px; border: 2px solid black;background-color: rgb(66, 184, 230);">
+                <strong>₹<%= ride.price %>/Seat</strong> 
+            </div>
+        </div>
+
+        <div class="bookingInfo-Part">
+            <form class="bookingForm" id="bookingForm">
+                <label for="passNum">Number of Passengers:</label>
+                <input type="number" name="passengers" min="1" max="<%= ride.availableSeats  %>" id="passNum" required>
+
+                <label for="bookingType">Booking for:</label>
+                <select id="bookingType" name="bookingType">
+                    <option value="self" selected>Myself</option>
+                    <option value="other">Someone else</option>
+                </select>
+
+                <div id="otherInfo" style="display: none;">
+                    <label for="passName">Name</label>
+                    <input type="text" id="passName" name="otherName" placeholder="Enter Passenger name">
+                    <label for="passEmail">Email</label>
+                    <input type="email" id="passEmail" name="otherEmail">
+                </div>
+
+                <input type="hidden" name="rideId" value="<%= ride._id %>">
+                <button type="submit">Request Booking</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        const bookingType = document.getElementById("bookingType");
+        const bookingForm = document.getElementById("bookingForm");
+        function otherDetails() {
+            const otherInfo = document.getElementById("otherInfo");
+            if (bookingType.value === "other") {
+                otherInfo.style.display = "block"
+            } else {
+                otherInfo.style.display = "none"
+            }
+        }
+
+        bookingType.addEventListener("change", otherDetails);
+
+        function booking(e) {
+
+            e.preventDefault();
+            const formData = new FormData(bookingForm);
+            const data = {};
+
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch("http://localhost:3300/confirmBooking", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+                credentials: "include"
+            }).then(response => response.json())
+                .then(result => {
+                    if (result.message === "Not such seats available"){
+                        alert("Not such seats available");
+                    }
+                    if (result.message === "Request sent successfully") {
+                        alert("Request sent successfully");
+                        window.location.href = `/bookRide/${data.rideId}`;
+                    } else {
+                        alert("Booking failed: " + (result.message || "not Loggin"));
+                    }
+                })
+                .catch(err => {
+                    alert("booking failed", err);
+                })
+
+        }
+
+        bookingForm.addEventListener("submit", booking);
+
+    </script>
+
+    <%- include('partials/footer') %>

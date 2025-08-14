@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>log in page</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <%- include('partials/header') %>
+    <div class="login-container">
+      <h1>What's your email and password?</h1>
+
+      <form id="loginForm">
+
+        <label for="email">Email</label>
+        <input type="email" placeholder="Enter your email" name="email" id="email" required />
+
+        <label for="password">Password</label>
+        <input type="password" placeholder="password" name="password" id="password" required />
+        <button type="button" onclick="forget()">Forget Password</button>
+        <button type="submit">Login</button>
+
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("loginForm");
+      function getCookie(name) {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          let cookie = cookies[i].trim();
+          if (cookie.startsWith(name + '=')) {
+            return cookie.substring(name.length + 1);
+          }
+        }
+        return null;
+      }
+
+      window.onload = function () {
+        const token = getCookie("token");
+        if (token) {
+          window.location.href = "/home";
+        }
+      };
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!email || !password) {
+          alert("Please fill all fields.");
+          return;
+        }
+
+        let data = {
+          email: email,
+          password: password
+        };
+
+
+        fetch("http://localhost:3300/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => response.json())
+          .then(result => {
+
+            if (result.message === "Please verify your email first.") {
+              alert("Please verify your email first.");
+              return;
+            }
+
+            if (result.message === "Login successful") {
+              alert("Login successful");
+              window.location.href = "/home";
+            } else {
+              alert("Login failed: " + result.error);
+            }
+          })
+          .catch(error => {
+            alert("Some error" + error.message);
+          });
+      });
+
+      function forget() {
+        window.location.href = "/forget";
+      }
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+
+</html>

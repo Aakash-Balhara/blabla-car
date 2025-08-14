@@ -1,0 +1,1051 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Header css */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#logo {
+  width: 160px;
+  height: auto;
+  cursor: pointer;
+}
+
+#navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+#navSearch {
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease;
+  font-size: 14px;
+}
+
+#navSearch:focus {
+  outline: none;
+  border-color: rgb(78, 180, 239);
+}
+
+.search i {
+  color: rgb(78, 180, 239);
+  margin-right: 6px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.publishRide {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgb(78, 180, 239);
+  font-weight: 500;
+}
+
+.publishRide i {
+  color: rgb(78, 180, 239);
+  margin-right: 6px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.publishRide a {
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.publishRide a:hover {
+  color: rgb(24, 117, 204);
+}
+
+/* Dropdown css */
+.dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dropdown-container i {
+  color: rgb(179, 183, 185);
+  margin-right: 6px;
+  cursor: pointer;
+  font-size: 40px;
+}
+
+.dropButton {
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.dropButton i {
+  color: rgb(78, 180, 239);
+  margin-right: 6px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.dropList {
+  display: none;
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  min-width: 140px;
+  border-radius: 8px;
+  overflow: hidden;
+
+}
+
+.dropList a {
+  display: block;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.dropList a:hover {
+  background-color: #f1f1f1;
+}
+
+
+
+/* all forms(login, signin, forget,reset css */
+
+
+.login-container,
+.signin,
+.forget-container,
+.reset-container {
+  width: 600px;
+  margin: auto;
+  padding: 2rem;
+  background: #fff;
+  font-family: gt-eesti, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  align-items: center;
+}
+
+.login-container h1,
+.forget-container h1,
+.reset-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 40px;
+}
+
+.login-container form input,
+.signin form input,
+#resetForm input {
+  width: 100%;
+  height: 30px;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 3px solid rgb(78, 180, 239);
+  border-radius: 16px;
+  background-color: #f4eeee;
+}
+
+#forgetForm input {
+  width: 100%;
+  height: 50px;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 3px solid rgb(78, 180, 239);
+  border-radius: 16px;
+  background-color: #f4eeee;
+}
+
+.login-container form button,
+.signin form button,
+.forget-container form button,
+#resetForm button {
+  width: 30%;
+  padding: 0.7rem;
+  background-color: rgb(78, 180, 239);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.login-container form button:hover,
+.signin form button:hover,
+.forget-container form button:hover,
+#resetForm button:hover {
+  background-color: rgb(63, 168, 229);
+}
+
+
+/* home css */
+
+#homeImg {
+  width: 100%;
+  height: 300px;
+}
+
+
+/* card css */
+.card-container {
+  display: flex;
+  /* justify-content: space-between; */
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 28%;
+  min-width: 150px;
+  height: 150px;
+  flex: 1 1 1;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+
+.card h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.card p {
+  color: #555;
+  font-size: 14px;
+}
+
+.icon {
+  height: 10px;
+  font-size: 90px;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+
+/* ride offer css */
+
+.ride-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f3f3f3;
+  padding: 40px 20px;
+  margin: 40px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  gap: 20px;
+  max-width: 1000px;
+}
+
+.rideText {
+  flex: 1;
+}
+
+.rideText h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.rideText p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.rideText button {
+  background-color: rgb(78, 180, 239);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.rideImg button:hover {
+  background-color: #0056b3;
+}
+
+.rideImg {
+  flex: 1;
+  text-align: center;
+}
+
+.rideImg img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+}
+
+/* ride offer form css */
+
+.formContainer {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 10px;
+}
+
+.formContainer label {
+  display: block;
+  margin-top: 15px;
+}
+
+.formContainer input,
+.formContainer textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.formContainer button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+/* ridePicker/ Ride list   css */
+
+.ridePicker-Container {
+  background-color: #022113;
+  color: white;
+  margin-top: 30px;
+  padding: 20px;
+}
+
+#rideList {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+#rideList li {
+  margin: 10px 0;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#rideList button {
+  padding: 6px 12px;
+  background-color: #fdfeff;
+  color: #022113;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#rideList button:hover {
+  background-color: #dbdde0;
+}
+
+
+/* show ride detaile css */
+
+.rideDetaile-partial {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 18px 24px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.rideDetaile-partial h3 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 20px;
+}
+
+.rideDetaile-partial p {
+  margin: 6px 0;
+  font-size: 16px;
+  color: #444;
+}
+
+.showRide-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+.showRide-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+
+/* booking ride css */
+
+.bookRide-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+.riderInfo-Part,
+.bookingInfo-Part {
+  flex: 1 1 45%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.riderInfo-Part h3 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: #2c3e50;
+}
+
+.riderInfo-Part p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.riderInfo-Part div {
+  font-weight: bold;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  color: #000;
+}
+
+.bookingInfo-Part form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bookingInfo-Part label {
+  font-weight: 600;
+}
+
+.bookingInfo-Part input,
+.bookingInfo-Part select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.bookingInfo-Part button {
+  padding: 0.7rem;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.bookingInfo-Part button:hover {
+  background-color: #1c5980;
+}
+
+#otherInfo {
+  padding-left: 1rem;
+  border-left: 3px solid #ccc;
+  margin-top: 0.5rem;
+}
+
+
+/* userRIdes css */
+
+.userRides-container {
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.userRides-container img {
+  width: 250px;
+  height: 200px;
+  margin-bottom: 1.5rem;
+
+}
+
+.userRides-container h1 {
+  font-size: 38px;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.userRides-container p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* If rides exist: cards layout */
+.rides-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.ride-card {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 280px;
+  padding: 1rem 1.2rem;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.ride-card:hover {
+  transform: translateY(-4px);
+}
+
+.ride-card h3 {
+  color: #005a8d;
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+}
+
+.ride-card p {
+  font-size: 0.9rem;
+  margin: 4px 0;
+  color: #444;
+}
+
+.ride-card .price {
+  font-weight: bold;
+  color: #1e90ff;
+  margin-top: 8px;
+}
+
+
+/* profile css */
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 3rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #f9f9f9;
+  border-radius: 1.5rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container i.fa-circle-user {
+  font-size: 5rem;
+  color: #4a90e2;
+  background-color: #e6f0ff;
+  padding: 1.2rem;
+  border-radius: 50%;
+}
+
+.Profile-Info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.Profile-Info h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.Profile-Info h4 {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: normal;
+}
+
+/* Responsive profile*/
+@media (max-width: 600px) {
+  .profile-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-container i.fa-circle-user {
+    font-size: 4rem;
+  }
+
+  .Profile-Info h1 {
+    font-size: 1.6rem;
+  }
+
+  .Profile-Info h4 {
+    font-size: 1rem;
+  }
+}
+
+
+/* rating css */
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-box {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.star {
+  font-size: 28px;
+  color: gray;
+  cursor: pointer;
+}
+
+.star.selected {
+  color: gold;
+}
+
+
+/* published rides css */
+
+.publishedRides-container {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  /* box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+}
+
+.publishedRides-container h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 40px;
+  font-size: 28px;
+}
+
+.publishedRides-container h3 {
+  margin-top: 30px;
+  color: #34495e;
+  font-size: 22px;
+  border-left: 4px solid #3498db;
+  padding-left: 10px;
+}
+
+.publishedRides-container p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.publishedRides-container p strong {
+  color: #000;
+}
+
+.publishedRides-container p:last-of-type {
+  margin-bottom: 30px;
+  /* border-bottom: 1px solid #ccc; */
+  padding-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .publishedRides-container {
+    padding: 20px;
+  }
+
+  .publishedRides-container h2 {
+    font-size: 22px;
+  }
+
+  .publishedRides-container h3 {
+    font-size: 18px;
+  }
+
+  .publishedRides-container p {
+    font-size: 14px;
+  }
+}
+  
+.popup-content {
+  padding: 20px;
+}
+
+.popup-content h4 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #2c3e50;
+  /* border-bottom: 1px solid #ccc; */
+  padding-bottom: 8px;
+}
+
+.popup-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.popup-content li {
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #555;
+  background-color: #f2f2f2;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.close-btn {
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  color: #e74c3c;
+  cursor: pointer;
+  margin-top: -10px;
+}
+
+.close-btn:hover {
+  color: #c0392b;
+}
+
+/* search css */
+
+.searchContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.from-to {
+  display: flex;
+  gap: 15px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.from-to input {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 220px;
+  transition: border-color 0.3s;
+}
+
+.from-to input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.from-to button {
+  padding: 10px 18px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.from-to button:hover {
+  background-color: #0056b3;
+}
+
+.searchValue {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.requiredRide {
+  list-style-type: none;
+  padding: 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.requiredRide li {
+  background-color: #f1f1f1;
+  padding: 12px 20px;
+  margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  color: #333;
+  transition: transform 0.2s;
+}
+
+.requiredRide li:hover {
+  transform: translateY(-2px);
+}
+
+.suggestions-list {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 250px;
+}
+.suggestions-list li {
+    padding: 8px;
+    cursor: pointer;
+}
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* inbox css */
+
+.inbox_container {
+  max-width: 700px;
+  margin: 80px auto;
+  padding: 30px;
+  text-align: center;
+
+}
+
+.inbox_container h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.inbox_container p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.notification-list {
+  list-style: none;
+  padding: 0;
+}
+
+.notification-item {
+  background-color: #fff;
+  border-left: 4px solid #ccc;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ddd;
+}
+
+.notification-item.accepted {
+  border-left-color: green;
+}
+
+.notification-item.rejected {
+  border-left-color: red;
+}
+
+.status {
+  font-weight: bold;
+  color: #333;
+}
+
+@media (max-width: 600px) {
+  .inbox_container {
+    padding: 20px;
+    margin: 40px 20px;
+  }
+
+  .inbox_container h1 {
+    font-size: 1.5rem;
+  }
+
+  .inbox_container p {
+    font-size: 1rem;
+  }
+}
+
+
+/* request ride css */
+
+
+.request-item {
+  margin: 20px 0;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.popup-box {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-box.active {
+  display: flex;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 350px;
+  position: relative;
+  text-align: left;
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+.popup-actions {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.popup-actions .btn {
+  padding: 6px 14px;
+  margin-left: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.popup-actions .accept {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.popup-actions .reject {
+  background-color: #f44336;
+  color: white;
+}
+
+
+/* chatting page css */
+
+body {
+  margin: 0;
+  padding-bottom: 3rem;
+}
+
+#form {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.25rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  height: 3rem;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+#input {
+  border: none;
+  padding: 0 1rem;
+  flex-grow: 1;
+  border-radius: 2rem;
+  margin: 0.25rem;
+}
+
+#input:focus {
+  outline: none;
+}
+
+#form>button {
+  background: #333;
+  border: none;
+  padding: 0 1rem;
+  margin: 0.25rem;
+  border-radius: 3px;
+  outline: none;
+  color: #fff;
+}
+
+#messages {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#messages>li {
+  padding: 0.5rem 1rem;
+}
+
+#messages>li:nth-child(odd) {
+  background: #efefef;
+}
+
+
